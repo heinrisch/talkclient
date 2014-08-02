@@ -1,7 +1,7 @@
 TalkClient
 =======
 
-A simple helper for communication between Android Wear and connected devices.
+A simple helper for playing with communication between Android Wear and connected devices.
 
 Usage
 --------
