@@ -6,7 +6,7 @@ A simple helper for communication between Android Wear and connected devices.
 Usage
 --------
 
-#In your activity, create a TalkClient and connect it:
+####In your activity, create a TalkClient and connect it:
 
 ```java
 public class Sample extends Activity {
@@ -32,7 +32,7 @@ public class Sample extends Activity {
 }
 ```
 
-#Send a message:
+####Send a message:
 
 ```java
     private void sendMessage() {
@@ -48,7 +48,7 @@ public class Sample extends Activity {
     }
 ```
 
-#Recieve a message in active app:
+####Recieve a message in active app:
 
 ```java
     @Override
@@ -63,7 +63,7 @@ public class Sample extends Activity {
     }
 ```
 
-#Recieve data on inactive (or active app):
+####Recieve data on inactive (or active app):
 
 ```java
 public class ListenerServiceMobile extends WearableListenerService {
@@ -108,13 +108,13 @@ With the serives, don't forget to add to manifest:
     </application>
 ```
 
-#Sync Data between app and watch:
+####Sync Data between app and watch:
 
 ```java
-        mTalkClient.syncDataArray("/my-path-to-data, dataMaps);
+        mTalkClient.syncDataArray("/my-path-to-data", dataMaps);
 ```
 
-#Retrive synched data:
+####Retrive synched data:
 
 ```java
         mTalkClient.setTalkDataAdapter(new TalkDataAdapter() {
@@ -127,13 +127,13 @@ With the serives, don't forget to add to manifest:
         mTalkClient.getDataItems("/my-path-to-data");
 ```
 
-#Sync bitmap asset:
+####Sync bitmap asset:
 
 ```java
         mTalkClient.syncBitmap("/my-bitmap-path", "asset-name", photo);
 ```
 
-#Retrive synched data:
+####Retrive synched data:
 
 ```java
         mTalkClient.setTalkDataAdapter(new TalkDataAdapter() {
