@@ -3,6 +3,8 @@ TalkClient
 
 A simple helper for playing with communication between Android Wear and connected devices.
 
+There is a .jar in the [dist folder](https://github.com/heinrisch/talkclient/tree/master/dist) if you want to try it out. However, I would recommend cloning the project and editing it for you needs before releasing any app.
+
 Usage
 --------
 
