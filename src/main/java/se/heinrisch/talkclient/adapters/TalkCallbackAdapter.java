@@ -9,14 +9,14 @@ public class TalkCallbackAdapter {
     private static final String TAG = "TalkCallbackAdapter Unimplemented callback";
 
     public void onConnected(Bundle bundle) {
-        Log.e(TAG, "onConnected");
+        Log.i(TAG, "onConnected");
     }
 
     public void onConnectionSuspended(int cause) {
-        Log.e(TAG, "onConnectionSuspended");
+        Log.i(TAG, "onConnectionSuspended");
     }
 
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.e(TAG, "onConnectionFailed");
+        Log.i(TAG, "onConnectionFailed");
     }
 }

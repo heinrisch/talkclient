@@ -13,6 +13,7 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItemBuffer;
 import com.google.android.gms.wearable.DataMap;
@@ -24,7 +25,6 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
-import com.google.android.gms.wearable.WearableListenerService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -35,7 +35,7 @@ import se.heinrisch.talkclient.adapters.TalkCallbackAdapter;
 import se.heinrisch.talkclient.adapters.TalkDataAdapter;
 import se.heinrisch.talkclient.adapters.TalkMessageAdapter;
 
-public class TalkClient implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MessageApi.MessageListener {
+public class TalkClient implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MessageApi.MessageListener, DataApi.DataListener {
 
     public final static String TAG = "TalkClient";
     public final static String DATA_ARRAY = "data-array";
@@ -85,12 +85,14 @@ public class TalkClient implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.MessageApi.addListener(mGoogleApiClient, this);
+        Wearable.DataApi.addListener(mGoogleApiClient, this);
         mTalkCallbackAdapter.onConnected(bundle);
     }
 
     @Override
     public void onConnectionSuspended(int cause) {
         Wearable.MessageApi.removeListener(mGoogleApiClient, this);
+        Wearable.DataApi.removeListener(mGoogleApiClient, this);
         mTalkCallbackAdapter.onConnectionSuspended(cause);
     }
 
@@ -132,6 +134,17 @@ public class TalkClient implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         mTalkMessageAdapter.onMessageReceived(messageEvent);
     }
 
+    @Override
+    public void onDataChanged(DataEventBuffer dataEvents) {
+        for (DataEvent event : dataEvents) {
+            if (event.getType() == DataEvent.TYPE_DELETED) {
+                mTalkDataAdapter.onDataDeleted(event.getDataItem());
+            } else if (event.getType() == DataEvent.TYPE_CHANGED) {
+                mTalkDataAdapter.onDataChanged(event.getDataItem());
+            }
+        }
+    }
+
     public void syncDataMap(String path, DataMap dataMap) {
         PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(path);
         putDataMapRequest.getDataMap().putDataMap(DATA_ITEM, dataMap);
@@ -167,9 +180,11 @@ public class TalkClient implements GoogleApiClient.ConnectionCallbacks, GoogleAp
                     final DataMapItem dataMapItem = DataMapItem.fromDataItem(dataItems.get(i));
                     if (dataMapItem.getUri().getPath().equals(path)) {
                         mTalkDataAdapter.onRecieveResult(dataMapItem.getDataMap());
-                        continue;
+                        dataItems.release();
+                        return;
                     }
                 }
+                mTalkDataAdapter.onRecieveResult(new DataMap());
                 dataItems.release();
             }
         });
